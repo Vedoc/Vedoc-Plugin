@@ -19,6 +19,8 @@ gem 'rails', '>= 7.1.3.2'
 # Ruby static code analyzer and code formatter
 gem 'rubocop', require: false
 
+gem 'bigdecimal', '~> 3.1'
+
 # Authentication solution for Rails
 gem 'devise'
 
