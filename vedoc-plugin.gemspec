@@ -29,5 +29,5 @@ Gem::Specification.new do | spec |
   spec.add_dependency 'rails', '>= 7.1.3.2'
 
 
-  spec.add_development_dependency 'sqlite3'
+spec.add_development_dependency 'pg'
 end
