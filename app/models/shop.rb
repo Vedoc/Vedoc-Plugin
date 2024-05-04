@@ -79,4 +79,8 @@ class Shop < ApplicationRecord
   def remove_categories_duplications
     self.categories = categories.uniq if categories.is_a?( Array )
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["additional_info", "address", "approved", "avatar", "average_rating", "categories", "certified", "complimentary_inspection", "created_at", "hours_of_operation", "id", "id_value", "languages", "location", "lounge_area", "name", "owner_name", "phone", "supervisor_permanently", "techs_per_shift", "tow_track", "updated_at", "vehicle_diesel", "vehicle_electric", "vehicle_warranties"]
+  end
 end

@@ -4,4 +4,8 @@ class CarModel < ApplicationRecord
 
   validates :car_make_id, presence: true
   validates :name, presence: true, uniqueness: { case_sensitive: false, scope: :car_make_id }
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[car_make model_years]
+  end
 end

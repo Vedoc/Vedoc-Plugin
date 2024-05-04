@@ -12,4 +12,8 @@ class Client < ApplicationRecord
   delegate :email, to: :account, allow_nil: true
 
   validates :phone, uniqueness: { case_sensitive: false }, if: -> { phone.present? }
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[address avatar created_at id id_value location name phone updated_at]
+  end
 end

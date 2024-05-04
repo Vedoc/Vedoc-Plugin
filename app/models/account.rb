@@ -54,4 +54,8 @@ class Account < ApplicationRecord
   def random_reset_code
     ( SecureRandom.random_number( 9e6 ) + 1e6 ).to_i
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[accountable_id accountable_type allow_password_change created_at email employee encrypted_password id id_value provider remember_created_at reset_password_sent_at reset_password_token tokens uid updated_at]
+  end
 end

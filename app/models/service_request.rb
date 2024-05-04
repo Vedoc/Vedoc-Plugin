@@ -21,4 +21,8 @@ class ServiceRequest < ApplicationRecord
   validates :evacuation, :repair_parts, inclusion: { in: [ true, false ] }
   validates :estimated_budget, numericality: { greater_than_or_equal_to: 0 },
                                if: -> { estimated_budget.present? }
+
+                               def self.ransackable_associations(auth_object = nil)
+                                %w[vehicle pictures offers] # Add associations you want to be searchable
+                              end                            
 end
