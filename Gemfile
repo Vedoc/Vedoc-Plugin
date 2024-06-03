@@ -35,6 +35,8 @@ gem 'carrierwave'
 
 gem "rails-settings-cached", "~> 2.9"
 
+gem 'activeadmin_settings_cached'
+
 gem 'sprockets-rails'
 
 gem 'sqlite3'
