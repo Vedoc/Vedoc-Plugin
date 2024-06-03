@@ -43,5 +43,6 @@ gem 'sqlite3'
 
 gem 'pg', '>= 0.18', '< 3.0'
 
+gem 'ransack'
 
 
