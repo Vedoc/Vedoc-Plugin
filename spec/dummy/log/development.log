@@ -1,0 +1,1 @@
+DEPRECATION WARNING: `Rails.application.secrets` is deprecated in favor of `Rails.application.credentials` and will be removed in Rails 7.2. (called from <top (required)> at /media/ikonde/Resources/Vedoc/Vedoc-Plugin/spec/dummy/config/environment.rb:5)

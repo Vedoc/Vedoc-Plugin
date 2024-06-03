@@ -31,4 +31,15 @@ gem 'devise_token_auth', git: 'https://github.com/lynndylanhurley/devise_token_a
 gem 'carrierwave'
 
 # Manage settings with Ruby on Rails
-gem 'rails-settings-cached'
+# gem 'rails-settings-cached'
+
+gem "rails-settings-cached", "~> 2.9"
+
+gem 'sprockets-rails'
+
+gem 'sqlite3'
+
+gem 'pg', '>= 0.18', '< 3.0'
+
+
+
