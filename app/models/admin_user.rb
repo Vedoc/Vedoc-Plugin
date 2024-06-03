@@ -3,7 +3,7 @@ class AdminUser < ApplicationRecord
 
   # Define ransackable attributes for Ransack search
   def self.ransackable_attributes(auth_object = nil)
-    ["created_at", "email", "id", "remember_created_at", "reset_password_sent_at", "updated_at"]
+    ["created_at", "email", "id", "remember_created_at", "reset_password_sent_at", "updated_at", "current_sign_in_at", "sign_in_count"]
   end
 
   # Define ransackable associations if any
