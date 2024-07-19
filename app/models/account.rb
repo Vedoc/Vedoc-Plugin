@@ -1,3 +1,5 @@
+# app/models/account.rb
+
 class Account < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
@@ -22,10 +24,10 @@ class Account < ApplicationRecord
     accountable_type == 'Shop'
   end
 
-  def send_reset_password_instructions( opts = {} )
+  def send_reset_password_instructions(opts = {})
     token = set_reset_code
 
-    opts[ :client_config ] ||= 'default'
+    opts[:client_config] ||= 'default'
     send_devise_notification :reset_password_instructions, token, opts
 
     token
@@ -46,16 +48,12 @@ class Account < ApplicationRecord
   def set_reset_code
     code = random_reset_code
 
-    Redis.current.setex email, Setting.password_reset_duration, code
+    $redis.setex email, Setting.password_reset_duration, code
 
     code
   end
 
   def random_reset_code
-    ( SecureRandom.random_number( 9e6 ) + 1e6 ).to_i
-  end
-
-  def self.ransackable_attributes(auth_object = nil)
-    %w[accountable_id accountable_type allow_password_change created_at email employee encrypted_password id id_value provider remember_created_at reset_password_sent_at reset_password_token tokens uid updated_at]
+    (SecureRandom.random_number(9e6) + 1e6).to_i
   end
 end
