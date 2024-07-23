@@ -1,14 +1,14 @@
 # app/models/setting.rb
 class Setting < ApplicationRecord
-  validates :key, presence: true, uniqueness: true
-  validates :value, presence: true
+  validates :var, presence: true, uniqueness: { scope: [:thing_type, :thing_id] }
+  validates :value, presence: true, unless: -> { value.nil? }
 
   def self.method_missing(method, *args)
-    setting = find_by(key: method.to_s)
+    setting = find_by(var: method.to_s)
     setting ? setting.value : super
   end
 
   def self.respond_to_missing?(method, include_private = false)
-    exists?(key: method.to_s) || super
+    exists?(var: method.to_s) || super
   end
 end

@@ -47,7 +47,7 @@ class Account < ApplicationRecord
   def set_reset_code
     code = random_reset_code
 
-    $redis.setex email, Setting.password_reset_duration, code
+    $redis.setex email, Setting.find_by(var: 'password_reset_duration').value.to_i, code
 
     code
   end
