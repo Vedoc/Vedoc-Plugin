@@ -4,9 +4,11 @@ class Shop < ApplicationRecord
 
   mount_uploader :avatar, ImageUploader
 
-  scope :approved, -> { where approved: true }
-  scope :by_rating, -> { order( average_rating: :desc ) }
+  # Scopes
+  scope :approved, -> { where(approved: true) }
+  scope :by_rating, -> { order(average_rating: :desc) }
 
+  # Associations
   has_many :accounts, as: :accountable, dependent: :destroy
   has_many :pictures, as: :imageable, dependent: :destroy
   has_many :promo_codes, dependent: :destroy
@@ -14,41 +16,13 @@ class Shop < ApplicationRecord
   has_many :ratings, through: :offers, dependent: :destroy
   has_many :service_requests, through: :offers
 
-  before_validation :remove_categories_duplications
-
-  CATEGORIES = {
-    mechanic_shop: 0,
-    car_wash: 1,
-    perfomance_shop: 2,
-    tire_shop: 3,
-    window_tint: 4,
-    auto_customization: 5,
-    car_stereo_installation: 6,
-    boat_repair: 7,
-    electric_vehicle_charging_station: 8,
-    exhaust_shop: 9,
-    auto_paint: 10,
-    independent_mechanic: 11,
-    auto_parts: 12,
-    auto_glass_service: 13,
-    windshield_service: 14,
-    towing: 15,
-    auto_upholstery: 16,
-    vehicle_transportation: 17,
-    pre_purchase_inspection: 18,
-    motorcycle_repair: 19,
-    vehicle_rental: 20,
-    auto_locksmith: 21
-  }.freeze
-
-  accepts_nested_attributes_for :pictures, allow_destroy: true, reject_if: :blank?
-
+  # Validations
   validates :name, :hours_of_operation, :techs_per_shift, :categories,
             :owner_name, :phone, :location, presence: true
   validates :name, uniqueness: { case_sensitive: false }
-  validates :certified, inclusion: { in: [ true, false ] }, if: :mechanic_shop?
+  validates :certified, inclusion: { in: [true, false] }, if: :mechanic_shop?
   validates :supervisor_permanently, :vehicle_warranties, :lounge_area,
-            :complimentary_inspection, inclusion: { in: [ true, false ] }
+            :complimentary_inspection, inclusion: { in: [true, false] }
   validates :techs_per_shift, numericality: {
     only_integer: true, greater_than_or_equal_to: 0
   }
@@ -56,31 +30,53 @@ class Shop < ApplicationRecord
   validate :pictures_min_number
   validate :categories_values
 
+  # Delegates
   delegate :email, to: :account, allow_nil: true
 
-  CATEGORIES.keys.each do | category |
-    define_method( "#{ category }?" ) do
-      categories.is_a?( Array ) && categories.include?( CATEGORIES[ category ] )
+  # Constants
+  CATEGORIES = {
+    mechanic_shop: 0,
+    car_wash: 1,
+    perfomance_shop: 2,
+    tire_shop: 3,
+    # Add other categories here
+  }.freeze
+
+  accepts_nested_attributes_for :pictures, allow_destroy: true, reject_if: :blank?
+
+  # Dynamic methods for each category
+  CATEGORIES.keys.each do |category|
+    define_method("#{category}?") do
+      categories.is_a?(Array) && categories.include?(CATEGORIES[category])
     end
+  end
+
+  # Method to return avatar URL 
+  def avatar_url
+    avatar.present? ? avatar.url : ""
   end
 
   private
 
   def pictures_min_number
-    errors.add( :pictures, :not_enough ) if pictures.size < 3
+    errors.add(:pictures, :not_enough) if pictures.size < 3
   end
 
   def categories_values
-    return if categories.is_a?( Array ) && categories.all? { | c | CATEGORIES.value?( c ) }
+    return if categories.is_a?(Array) && categories.all? { |c| CATEGORIES.value?(c) }
 
     errors.add :categories, :invalid
   end
 
   def remove_categories_duplications
-    self.categories = categories.uniq if categories.is_a?( Array )
+    self.categories = categories.uniq if categories.is_a?(Array)
   end
 
+  # Ransackable attributes for search
   def self.ransackable_attributes(auth_object = nil)
-    ["additional_info", "address", "approved", "avatar", "average_rating", "categories", "certified", "complimentary_inspection", "created_at", "hours_of_operation", "id", "id_value", "languages", "location", "lounge_area", "name", "owner_name", "phone", "supervisor_permanently", "techs_per_shift", "tow_track", "updated_at", "vehicle_diesel", "vehicle_electric", "vehicle_warranties"]
+    ["additional_info", "address", "approved", "avatar", "average_rating", "categories", "certified", "complimentary_inspection", 
+     "created_at", "hours_of_operation", "id", "languages", "location", "lounge_area", "name", "owner_name", "phone", 
+     "supervisor_permanently", "techs_per_shift", "tow_track", "updated_at", "vehicle_diesel", "vehicle_electric", 
+     "vehicle_warranties"]
   end
 end
