@@ -2,7 +2,7 @@ class Shop < ApplicationRecord
   include Locationable
   include Categoriable
 
-  mount_uploader :avatar_url, ImageUploader
+  mount_uploader :avatar, ImageUploader
 
   # Scopes
   scope :approved, -> { where(approved: true) }

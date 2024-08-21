@@ -1,7 +1,7 @@
 class Client < ApplicationRecord
   include Locationable
 
-  mount_uploader :avatar_url, ImageUploader
+  mount_uploader :avatar, ImageUploader
 
   has_one :account, as: :accountable, dependent: :destroy
   has_many :vehicles, dependent: :destroy
