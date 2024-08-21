@@ -74,7 +74,7 @@ class Shop < ApplicationRecord
 
   # Ransackable attributes for search
   def self.ransackable_attributes(auth_object = nil)
-    ["additional_info", "address", "approved", "avatar", "average_rating", "categories", "certified", "complimentary_inspection", 
+    ["additional_info", "address", "approved", "avatar_url", "average_rating", "categories", "certified", "complimentary_inspection", 
      "created_at", "hours_of_operation", "id", "languages", "location", "lounge_area", "name", "owner_name", "phone", 
      "supervisor_permanently", "techs_per_shift", "tow_track", "updated_at", "vehicle_diesel", "vehicle_electric", 
      "vehicle_warranties"]
