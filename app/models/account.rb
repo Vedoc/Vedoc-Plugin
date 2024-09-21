@@ -1,7 +1,8 @@
 # app/models/account.rb
 class Account < ApplicationRecord
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable, :confirmable,
+         :omniauthable, :trackable, :lockable, :timeoutable
   include ::DeviseTokenAuth::Concerns::User if defined? ::DeviseTokenAuth
 
   scope :clients, -> { where accountable_type: 'Client' }
