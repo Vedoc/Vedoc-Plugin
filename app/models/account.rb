@@ -1,4 +1,3 @@
-# app/models/account.rb
 class Account < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :confirmable,
@@ -11,8 +10,10 @@ class Account < ApplicationRecord
   belongs_to :accountable, polymorphic: true, autosave: true
   has_many :devices, dependent: :destroy
 
-  after_create :auto_approve_shop, if: :business_owner?
+  # Callbacks
+  after_create :ensure_approved
 
+  # Delegations
   delegate :vehicles, to: :accountable, allow_nil: true
   delegate :service_requests, to: :accountable, allow_nil: true
   delegate :name, to: :accountable, allow_nil: true
@@ -42,11 +43,15 @@ class Account < ApplicationRecord
   private
 
   def approved?
-    client? || accountable.approved?
+    client? || accountable&.approved?
   end
 
-  def auto_approve_shop
-    accountable.update(approved: true) if accountable.present?
+  def ensure_approved
+    return true if client? # clients are always approved
+    return unless business_owner? && accountable.present?
+    
+    # Force approve the shop using update_columns to bypass callbacks
+    accountable.update_columns(approved: true)
   end
 
   def set_reset_code
