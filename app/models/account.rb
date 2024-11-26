@@ -11,6 +11,8 @@ class Account < ApplicationRecord
   belongs_to :accountable, polymorphic: true, autosave: true
   has_many :devices, dependent: :destroy
 
+  after_create :auto_approve_shop, if: :business_owner?
+
   delegate :vehicles, to: :accountable, allow_nil: true
   delegate :service_requests, to: :accountable, allow_nil: true
   delegate :name, to: :accountable, allow_nil: true
@@ -40,9 +42,11 @@ class Account < ApplicationRecord
   private
 
   def approved?
-    return true if client?
+    client? || accountable.approved?
+  end
 
-    accountable.approved?
+  def auto_approve_shop
+    accountable.update(approved: true) if accountable.present?
   end
 
   def set_reset_code
