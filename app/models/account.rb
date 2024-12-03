@@ -44,23 +44,21 @@ class Account < ApplicationRecord
 
   def approved?
     return true if client?
-    return true if business_owner? && accountable.present?
+    return true if business_owner?
     
     false
   end
 
   def ensure_approved
-    return true if client?
+    return true if client? 
     return unless business_owner? && accountable.present?
-    
+  
     accountable.update_columns(approved: true)
   end
 
   def set_reset_code
     code = random_reset_code
-
     $redis.setex email, Setting.find_by(var: 'password_reset_duration').value.to_i, code
-
     code
   end
 
