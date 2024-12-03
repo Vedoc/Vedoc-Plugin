@@ -37,7 +37,7 @@ class Account < ApplicationRecord
   end
 
   def active_for_authentication?
-    super && approved?
+    super
   end
 
   private
