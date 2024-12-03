@@ -11,7 +11,7 @@ class Account < ApplicationRecord
   has_many :devices, dependent: :destroy
 
   # Callbacks
-  # after_create :ensure_approved
+  after_create :ensure_approved
 
   # Delegations
   delegate :vehicles, to: :accountable, allow_nil: true
@@ -44,17 +44,17 @@ class Account < ApplicationRecord
 
   def approved?
     return true if client?
-
-    accountable.approved?
+    return true if business_owner? && accountable.present?
+    
+    false
   end
 
-  # def ensure_approved
-  #   return true if client? # clients are always approved
-  #   return unless business_owner? && accountable.present?
+  def ensure_approved
+    return true if client?
+    return unless business_owner? && accountable.present?
     
-  #   # Force approve the shop using update_columns to bypass callbacks
-  #   accountable.update_columns(approved: true)
-  # end
+    accountable.update_columns(approved: true)
+  end
 
   def set_reset_code
     code = random_reset_code
