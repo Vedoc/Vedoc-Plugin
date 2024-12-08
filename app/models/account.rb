@@ -43,8 +43,13 @@ class Account < ApplicationRecord
   private
 
   def approved?
-    client? || (business_owner? && accountable&.approved?)
-    # true
+    # Ensure all clients are approved
+    return true if client?
+
+    # Ensure business owners are approved only if their shop is approved
+    return accountable&.approved? if business_owner?
+
+    false
   end
   
 
