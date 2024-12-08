@@ -37,30 +37,37 @@ class Account < ApplicationRecord
   end
 
   def active_for_authentication?
-    super && approved?
+    super && approved? && confirmed?
   end
 
   private
 
   def approved?
-    Rails.logger.debug("Evaluating approved? for Account ##{id}, type: #{accountable_type}")
+    Rails.logger.debug("Account #{id} check - Type: #{accountable_type}, Accountable: #{accountable.inspect}")
     
-    return true if client?.tap { Rails.logger.debug("Client approved.") }
-    if business_owner?
-      Rails.logger.debug("Business owner approval status: #{accountable&.approved?}")
-      return accountable&.approved?
+    if client?
+      approved = accountable&.approved?
+      Rails.logger.debug("Client approval status: #{approved}")
+      return approved
+    elsif business_owner?
+      approved = accountable&.approved?
+      Rails.logger.debug("Business owner approval status: #{approved}")
+      return approved
     end
   
-    Rails.logger.debug("Approval check failed for Account ##{id}.")
+    Rails.logger.debug("No valid accountable type found")
     false
   end
   
 
   def ensure_approved
-    return true if client? 
-    return unless business_owner? && accountable.present?
-  
-    accountable.update_columns(approved: true)
+    return unless accountable.present?
+    
+    if client?
+      accountable.update_column(:approved, true) unless accountable.approved?
+    elsif business_owner?
+      accountable.update_column(:approved, true) unless accountable.approved?
+    end
   end
 
   def set_reset_code
