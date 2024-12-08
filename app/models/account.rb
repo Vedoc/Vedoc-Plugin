@@ -43,8 +43,8 @@ class Account < ApplicationRecord
   private
 
   def approved?
-    # client? || (business_owner? && accountable&.approved?)
-    true
+    client? || (business_owner? && accountable&.approved?)
+    # true
   end
   
 
