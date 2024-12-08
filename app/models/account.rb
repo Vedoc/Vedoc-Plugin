@@ -43,14 +43,21 @@ class Account < ApplicationRecord
   private
 
   def approved?
+    Rails.logger.debug("Evaluating approved? for Account ##{id}, accountable_type: #{accountable_type}")
+    
     # Ensure all clients are approved
-    return true if client?
-
+    return true if client?.tap { Rails.logger.debug("Client approved.") }
+  
     # Ensure business owners are approved only if their shop is approved
-    return accountable&.approved? if business_owner?
-
+    if business_owner?
+      Rails.logger.debug("Business owner, checking accountable approval: #{accountable&.approved?}")
+      return accountable&.approved?
+    end
+  
+    Rails.logger.debug("Approval check failed.")
     false
   end
+  
   
 
   def ensure_approved
