@@ -29,6 +29,7 @@ class Shop < ApplicationRecord
   validates :address, uniqueness: { case_sensitive: false }, if: -> { address.present? }
   validate :pictures_min_number
   validate :categories_values
+  validates :pictures, presence: true, unless: -> { Rails.env.development? || Rails.env.test? }
 
   # Delegates
   delegate :email, to: :account, allow_nil: true
